@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import './ListProduct.css'
 import cross_icon from '../../assets/cross_icon.png'
 import axios, { all } from "axios";
+import { useNavigate } from 'react-router-dom';
 
 const ListProduct = () => {
-
+    const navigate = useNavigate();
     const [allProducts, setAllProducts] = useState([]);
 
     // const fetchInfo = async () => {
@@ -23,16 +24,28 @@ const ListProduct = () => {
     // }
 
     useEffect(() => {
-        axios.get("http://localhost:8000/product")
-            .then(res => {
-                const categories = res.data.data;
-                setAllProducts(categories);
-                console.log("asjbajsb", categories);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        const fetchInfo = async () => {
+            axios.get("http://localhost:8000/product")
+                .then(res => {
+                    const categories = res.data.data;
+                    setAllProducts(categories);
+                    console.log("asjbajsb", categories);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+        fetchInfo();
     }, []);
+
+    const remove_product = async (id, useEffect) => {
+        await axios.delete(`http://localhost:8000/product/${id}/delete`)
+            .then(response => {
+                response.data.success ? alert("Delete product success") : alert("Failed")
+                window.location.reload(true)
+            });
+        await useEffect();
+    }
 
 
     return (
@@ -57,7 +70,7 @@ const ListProduct = () => {
                             <p>${product.old_price}</p>
                             <p>${product.new_price}</p>
                             <p>{product.category}</p>
-                            <img src={cross_icon} className='listproduct-remove-icon' alt="" />
+                            <img onClick={() => { remove_product(product.id) }} src={cross_icon} className='listproduct-remove-icon' alt="" />
                         </div>
                         <hr />
                     </div>

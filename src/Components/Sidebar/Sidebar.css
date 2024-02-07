@@ -27,7 +27,7 @@
         flex-direction: row;
         width: 100%;
         max-width: none;
-        height: none;
+        height: 50px;
         justify-content: center;
     }
 
