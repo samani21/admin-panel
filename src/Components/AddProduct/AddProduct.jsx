@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './AddProduct.css'
 import upload_area from '../../assets/upload_area.svg'
+import axios from 'axios'
 
 const AddProduct = () => {
     const [image, setImage] = useState(false);
@@ -27,24 +28,32 @@ const AddProduct = () => {
         const formData = new FormData();
         formData.append('image', image);
 
-        await fetch('http://localhost:8000/product/upload', {
-            method: 'POST',
-            body: formData,
-        }).then((resp) => resp.json()).then((data) => { responseData = data })
-
+        await axios.post("http://localhost:8000/product/upload", formData,)
+            .then(response => {
+                responseData = response.data;
+                console.log(responseData);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         if (responseData.success) {
             product.image = responseData.data.image;
             console.log(product);
-            await fetch('http://localhost:8000/product/add', {
-                method: 'POST',
+            const jsonData = JSON.stringify(product);
+
+            await axios.post("http://localhost:8000/product/add", jsonData, {
                 headers: {
-                    'Content-Type': 'application/json' // Jenis konten yang dikirim (dalam kasus ini, JSON)
-                },
-                body: JSON.stringify(product)
-            }).then((resp) => resp.json()).then((data) => {
-                data.success ? alert("Product Added") : alert("Failed")
+                    'Content-Type': 'application/json'
+                }
             })
+                .then(response => {
+                    response.data.success ? alert("Product Added") : alert("Failed")
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
+
     }
 
     return (
