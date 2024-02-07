@@ -27,9 +27,9 @@ const ListProduct = () => {
         const fetchInfo = async () => {
             axios.get("http://localhost:8000/product")
                 .then(res => {
-                    const categories = res.data.data;
-                    setAllProducts(categories);
-                    console.log("asjbajsb", categories);
+                    const product = res.data.data;
+                    setAllProducts(product);
+                    console.log("asjbajsb", product);
                 })
                 .catch(error => {
                     console.log(error);
